@@ -1,0 +1,11 @@
+node_modules
+coverage
+dist
+bin
+.vscode
+.DS_Store
+.eslintcache
+*.log*
+*.env*
+
+cf-tunnel-*.tgz
