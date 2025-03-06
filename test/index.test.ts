@@ -27,7 +27,6 @@ vi.mock("node:fs", () => ({
 const TEST_CONFIG = {
   cfToken: "fake-token",
   tunnelName: "test-tunnel",
-  domain: "test-domain.test",
   ingress: [
     {
       hostname: "test.test-domain.test",
@@ -62,7 +61,6 @@ describe("cf-tunnel", () => {
     const config = defineTunnelConfig({
       cfToken: "token",
       tunnelName: "test",
-      domain: "example.com",
       ingress: [
         {
           hostname: "test.example.com",
