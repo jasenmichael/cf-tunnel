@@ -1,9 +1,8 @@
-#!/usr/bin/env node --env-file=.env
+#!/usr/bin/env node
 import { Command } from "commander";
 import { consola } from "consola";
 import { existsSync } from "node:fs";
 import { resolve, isAbsolute } from "node:path";
-import { fileURLToPath } from "node:url";
 import { readFileSync } from "node:fs";
 import yaml from "yaml";
 import "dotenv/config";
@@ -28,7 +27,7 @@ function getConfigPath(configPath: string) {
   if (!configPath) {
     for (const file of CONFIG_FILES) {
       if (existsSync(resolve(startDir, file))) {
-        configPath = file;
+        configPath = resolve(startDir, file);
         break;
       }
     }
@@ -72,7 +71,8 @@ async function loadConfig(configPath: string): Promise<TunnelConfig> {
 
     case "js":
     case "mjs": {
-      config = await import(fileURLToPath(`file://${configPath}`));
+      const fileUrl = new URL(`file://${configPath}`);
+      config = await import(fileUrl.href);
       return config.default;
     }
 
@@ -92,6 +92,7 @@ program
       const configPath = getConfigPath(options.config);
       consola.info(`Loading config: ${configPath}`);
       const config = await loadConfig(configPath);
+      consola.info("Config loaded");
 
       config.cfToken = config.cfToken || process.env?.CF_TOKEN;
 
