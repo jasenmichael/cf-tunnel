@@ -68,7 +68,7 @@ function getCloudflaredConfigDir(): string {
 
 async function deleteTunnel({
   tunnelName,
-  cloudflaredConfigDir = join(homedir(), ".cloudflared"),
+  cloudflaredConfigDir = getCloudflaredConfigDir(),
 }: TunnelConfig) {
   // Get and delete existing tunnel if exists
   const tunnelList = execSync("cloudflared tunnel list").toString();
