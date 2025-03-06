@@ -1,9 +1,9 @@
 # 모-cf-tunnel-던
 
-<!-- automd:badges name="@jasenmichael/cf-tunnel" codecov license -->
+<!-- automd:badges name="cf-tunnel" codecov license -->
 
-[![npm version](https://img.shields.io/npm/v/@jasenmichael/cf-tunnel)](https://npmjs.com/package/@jasenmichael/cf-tunnel)
-[![npm downloads](https://img.shields.io/npm/dm/@jasenmichael/cf-tunnel)](https://npm.chart.dev/@jasenmichael/cf-tunnel)
+[![npm version](https://img.shields.io/npm/v/cf-tunnel)](https://npmjs.com/package/cf-tunnel)
+[![npm downloads](https://img.shields.io/npm/dm/cf-tunnel)](https://npm.chart.dev/cf-tunnel)
 [![codecov](https://img.shields.io/codecov/c/gh/jasenmichael/cf-tunnel)](https://codecov.io/gh/jasenmichael/cf-tunnel)
 [![license](https://img.shields.io/github/license/jasenmichael/cf-tunnel)](https://github.com/jasenmichael/cf-tunnel/blob/main/LICENSE)
 
