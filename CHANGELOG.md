@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.0
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.0.1-beta.1...v0.1.0)
+
+### 🚀 Enhancements
+
+- ⚠️  Remove domain option from config ([7c689a7](https://github.com/jasenmichael/cf-tunnel/commit/7c689a7))
+
+#### ⚠️ Breaking Changes
+
+- ⚠️  Remove domain option from config ([7c689a7](https://github.com/jasenmichael/cf-tunnel/commit/7c689a7))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.0.1-beta.1
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.0.1-beta.0...v0.0.1-beta.1)
