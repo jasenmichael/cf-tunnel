@@ -1,12 +1,10 @@
 # Changelog
 
-
 ## v0.0.1-beta.0
-
 
 ### 🚀 Enhancements
 
-- ⚠️  Initial release of Cloudflare tunnel manager ([4b1e5c1](https://github.com/jasenmichael/cf-tunnel/commit/4b1e5c1))
+- ⚠️ Initial release of Cloudflare tunnel manager ([4b1e5c1](https://github.com/jasenmichael/cf-tunnel/commit/4b1e5c1))
 - Add CLI interface ([9c46748](https://github.com/jasenmichael/cf-tunnel/commit/9c46748))
 - Add build configuration ([19e9ca8](https://github.com/jasenmichael/cf-tunnel/commit/19e9ca8))
 - Add vitest.config.ts ([f5ce0e9](https://github.com/jasenmichael/cf-tunnel/commit/f5ce0e9))
@@ -41,9 +39,8 @@
 
 #### ⚠️ Breaking Changes
 
-- ⚠️  Initial release of Cloudflare tunnel manager ([4b1e5c1](https://github.com/jasenmichael/cf-tunnel/commit/4b1e5c1))
+- ⚠️ Initial release of Cloudflare tunnel manager ([4b1e5c1](https://github.com/jasenmichael/cf-tunnel/commit/4b1e5c1))
 
 ### ❤️ Contributors
 
 - Jasenmichael <jasen@jasenmichael.com>
-
