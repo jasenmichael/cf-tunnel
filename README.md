@@ -215,8 +215,9 @@ await cfTunnel(tunnelConfig);
 1. Clone this repository
 2. Install latest LTS version of [Node.js](https://nodejs.org/en/)
 3. Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
-4. Install dependencies using `npm install`
-5. Run interactive tests using `npm run dev`
+4. Install dependencies using `pnpm install`
+5. Run interactive tests using `pnpm dev`
+
 
 </details>
 
