@@ -15,7 +15,6 @@ export interface TunnelConfig {
   cfToken?: string;
   tunnelName: string;
   cloudflaredConfigDir?: string;
-  domain: string;
   ingress: TunnelIngress[];
   // TODO: add optional removeDnsRecords and removeTunnel
   // removeDnsRecords?: { before: boolean, after: boolean }
@@ -30,7 +29,6 @@ export interface TunnelConfig {
  * const config = defineTunnelConfig({
  *   cfToken: process.env.CF_TOKEN,
  *   tunnelName: 'my-tunnel',
- *   domain: 'example.com',
  *   ingress: [{
  *     hostname: 'app.example.com',
  *     service: 'http://localhost:3000'
@@ -41,7 +39,6 @@ export interface TunnelConfig {
  * @param config - Tunnel configuration object
  * @param config.cfToken - Cloudflare API token (defaults to process.env.CF_TOKEN)
  * @param config.tunnelName - Name for the tunnel
- * @param config.domain - Your Cloudflare domain
  * @param config.cloudflaredConfigDir - Path to cloudflared config directory (defaults to ~/.cloudflared)
  * @param config.ingress - Array of services to expose
  * @returns Validated tunnel configuration
@@ -86,27 +83,48 @@ async function deleteTunnel({
   }
 }
 
-async function deleteDnsRecords(
-  config: Required<Pick<TunnelConfig, "cfToken" | "domain" | "ingress">>,
-) {
-  async function getZoneId(domain: string, cfToken: string) {
-    const response = await fetch(
-      `https://api.cloudflare.com/client/v4/zones?name=${domain}`,
-      {
-        headers: {
-          Authorization: `Bearer ${cfToken}`,
-          "Content-Type": "application/json",
-        },
-      },
-    );
-    const data = await response.json();
-    return data.result[0].id;
+/**
+ * Extract domain from a hostname (e.g., "app.example.com" -> "example.com")
+ */
+function extractDomain(hostname: string): string {
+  // Simple approach for common TLDs
+  const parts = hostname.split(".");
+  if (parts.length >= 2) {
+    return parts.slice(-2).join(".");
   }
-  // Get zone ID
-  const zoneId = await getZoneId(config.domain, config.cfToken);
+  return hostname;
+}
 
+async function getZoneId(domain: string, cfToken: string) {
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/zones?name=${domain}`,
+    {
+      headers: {
+        Authorization: `Bearer ${cfToken}`,
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  const data = await response.json();
+  return data.result[0]?.id;
+}
+
+async function deleteDnsRecords(
+  config: Required<Pick<TunnelConfig, "cfToken" | "ingress">>,
+) {
   // Remove existing DNS records
   for (const service of config.ingress) {
+    // Extract domain from hostname
+    const domain = extractDomain(service.hostname);
+
+    // Get zone ID for this domain
+    const zoneId = await getZoneId(domain, config.cfToken);
+
+    if (!zoneId) {
+      console.warn(`Zone ID not found for domain: ${domain}`);
+      continue;
+    }
+
     const recordResponse = await fetch(
       `https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records?name=${service.hostname}`,
       {
@@ -145,7 +163,6 @@ async function deleteDnsRecords(
  * await cfTunnel({
  *   cfToken: process.env.CF_TOKEN,
  *   tunnelName: 'my-tunnel',
- *   domain: 'example.com',
  *   ingress: [{
  *     hostname: 'app.example.com',
  *     service: 'http://localhost:3000'
@@ -156,7 +173,6 @@ async function deleteDnsRecords(
  * @param userConfig - Tunnel configuration object
  * @param userConfig.cfToken - Cloudflare API token (defaults to process.env.CF_TOKEN)
  * @param userConfig.tunnelName - Name for the tunnel
- * @param userConfig.domain - Your Cloudflare domain
  * @param userConfig.cloudflaredConfigDir - Path to cloudflared config directory (defaults to ~/.cloudflared)
  * @param userConfig.ingress - Array of services to expose
  * @throws Will throw an error if cfToken is missing
