@@ -55,5 +55,6 @@
     "defu": "^6.1.4",
     "dotenv": "^16.4.7",
     "yaml": "^2.4.1"
-  }
+  },
+  "packageManager": "pnpm@10.5.0"
 }
