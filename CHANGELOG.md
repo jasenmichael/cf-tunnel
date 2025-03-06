@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.0.1-beta.1
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.0.1-beta.0...v0.0.1-beta.1)
+
+### 🩹 Fixes
+
+- Ci workflow corepack setup ([cc2b3aa](https://github.com/jasenmichael/cf-tunnel/commit/cc2b3aa))
+- Set pnpm as packageManager ([1b95fcb](https://github.com/jasenmichael/cf-tunnel/commit/1b95fcb))
+- Ci workflow corepack setup ([8503f30](https://github.com/jasenmichael/cf-tunnel/commit/8503f30))
+- Readme badges ([69ce29e](https://github.com/jasenmichael/cf-tunnel/commit/69ce29e))
+- Readme ([5d18aac](https://github.com/jasenmichael/cf-tunnel/commit/5d18aac))
+- Codecov badge ([fd8405b](https://github.com/jasenmichael/cf-tunnel/commit/fd8405b))
+- Readme ([2c0da70](https://github.com/jasenmichael/cf-tunnel/commit/2c0da70))
+- Readme ([bdaabb6](https://github.com/jasenmichael/cf-tunnel/commit/bdaabb6))
+
+### 🏡 Chore
+
+- Apply automated updates ([b9312c4](https://github.com/jasenmichael/cf-tunnel/commit/b9312c4))
+- Update changelog ([b21cfad](https://github.com/jasenmichael/cf-tunnel/commit/b21cfad))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.0.1-beta.0
 
 ### 🚀 Enhancements
