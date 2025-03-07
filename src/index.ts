@@ -275,6 +275,10 @@ export async function cfTunnel(userConfig: TunnelConfig) {
     // remove dns records
     await deleteDnsRecords(validatedConfig);
     // remove config.yml
-    execSync(`rm ${join(validatedConfig.cloudflaredConfigDir, "config.yml")}`);
+    if (existsSync(join(validatedConfig.cloudflaredConfigDir, "config.yml"))) {
+      execSync(
+        `rm ${join(validatedConfig.cloudflaredConfigDir, "config.yml")}`,
+      );
+    }
   });
 }
