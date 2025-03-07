@@ -271,9 +271,10 @@ export async function cfTunnel(userConfig: TunnelConfig) {
     console.log("SIGINT exiting");
     tunnel.kill("SIGINT");
     // delete cloudflared tunnel, and local tunnel credentials .json file
-    await deleteTunnel(validatedConfig);
+
+    await deleteTunnel({ ...validatedConfig, removeExistingTunnel: true });
     // remove dns records
-    await deleteDnsRecords(validatedConfig);
+    await deleteDnsRecords({ ...validatedConfig, removeExistingDns: true });
     // remove config.yml
     if (existsSync(join(validatedConfig.cloudflaredConfigDir, "config.yml"))) {
       execSync(
