@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.2
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.1...v0.1.2)
+
+### 🩹 Fixes
+
+- Error removing non-existant config ([47c0a4f](https://github.com/jasenmichael/cf-tunnel/commit/47c0a4f))
+
+### 🏡 Chore
+
+- Update readme ([b4eba1e](https://github.com/jasenmichael/cf-tunnel/commit/b4eba1e))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.1.1
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.0...v0.1.1)
