@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.1
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.0...v0.1.1)
+
+### 🚀 Enhancements
+
+- Add removeExistingDns and removeExistingTunnel configuration options ([b553766](https://github.com/jasenmichael/cf-tunnel/commit/b553766))
+
+### 🏡 Chore
+
+- Apply automated updates ([8816978](https://github.com/jasenmichael/cf-tunnel/commit/8816978))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.1.0
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.0.1-beta.1...v0.1.0)
