@@ -270,16 +270,8 @@ Published under the [MIT](./LICENSE) license.
 
 ## Contributors
 
-<!-- automd:contributors author=jasenmichael license=MIT -->
-
 Published under the [MIT](https://github.com/jasenmichael/cf-tunnel/blob/main/LICENSE) license.
-Made by [@jasenmichael](https://github.com/jasenmichael) and [community](https://github.com/jasenmichael/cf-tunnel/graphs/contributors) 💛
-<br><br>
-<a href="https://github.com/jasenmichael/cf-tunnel/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=jasenmichael/cf-tunnel" />
-</a>
-
-<!-- /automd -->
+Made by [@jasenmichael](https://github.com/jasenmichael) ❤️
 
 <!-- automd:with-automd -->
 
