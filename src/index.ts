@@ -72,25 +72,40 @@ async function deleteTunnel({
   cloudflaredConfigDir = getCloudflaredConfigDir(),
   removeExistingTunnel = false,
 }: TunnelConfig) {
-  // Get and delete existing tunnel if exists
-  const tunnelList = execSync("cloudflared tunnel list").toString();
-  const existingTunnelId = tunnelList
-    .split("\n")
-    .find((line: string) => line.includes(tunnelName))
-    ?.split(" ")[0];
+  try {
+    // Try to get existing tunnel if it exists
+    const tunnelList = execSync("cloudflared tunnel list", {
+      stdio: "pipe", // Capture output to prevent errors showing
+    }).toString();
 
-  if (existingTunnelId) {
-    if (!removeExistingTunnel) {
-      throw new Error(
-        `Tunnel "${tunnelName}" already exists. Set removeExistingTunnel: true to remove it automatically.`,
-      );
+    const existingTunnelId = tunnelList
+      .split("\n")
+      .find((line: string) => line.includes(tunnelName))
+      ?.split(" ")[0];
+
+    if (existingTunnelId) {
+      if (!removeExistingTunnel) {
+        throw new Error(
+          `Tunnel "${tunnelName}" already exists. Set removeExistingTunnel: true to remove it automatically.`,
+        );
+      }
+
+      console.log(`Removing existing tunnel: ${tunnelName}`);
+      execSync(`cloudflared tunnel delete ${existingTunnelId}`);
+      const credFile = join(cloudflaredConfigDir, `${existingTunnelId}.json`);
+      if (existsSync(credFile)) {
+        execSync(`rm ${credFile}`);
+      }
     }
-
-    console.log(`Removing existing tunnel: ${tunnelName}`);
-    execSync(`cloudflared tunnel delete ${existingTunnelId}`);
-    const credFile = join(cloudflaredConfigDir, `${existingTunnelId}.json`);
-    if (existsSync(credFile)) {
-      execSync(`rm ${credFile}`);
+  } catch (error) {
+    // Only rethrow if not in SIGINT cleanup context
+    if (removeExistingTunnel) {
+      console.warn(
+        // @ts-ignore
+        `Warning: Could not check or delete tunnel: ${error.message}`,
+      );
+    } else {
+      throw error;
     }
   }
 }
