@@ -1,7 +1,6 @@
 {
   "cfToken": "your-cloudflare-api-token",
   "tunnelName": "my-tunnel",
-  "domain": "example.com",
   "ingress": [
     {
       "hostname": "app.example.com",

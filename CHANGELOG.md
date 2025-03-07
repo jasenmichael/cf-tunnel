@@ -6,11 +6,11 @@
 
 ### 🚀 Enhancements
 
-- ⚠️  Remove domain option from config ([7c689a7](https://github.com/jasenmichael/cf-tunnel/commit/7c689a7))
+- ⚠️ Remove domain option from config ([7c689a7](https://github.com/jasenmichael/cf-tunnel/commit/7c689a7))
 
 #### ⚠️ Breaking Changes
 
-- ⚠️  Remove domain option from config ([7c689a7](https://github.com/jasenmichael/cf-tunnel/commit/7c689a7))
+- ⚠️ Remove domain option from config ([7c689a7](https://github.com/jasenmichael/cf-tunnel/commit/7c689a7))
 
 ### ❤️ Contributors
 

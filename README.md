@@ -11,6 +11,24 @@ Easily manage Cloudflare Tunnels in your Node.js applications.
 
 <!-- /automd -->
 
+## Why Use cf-tunnel?
+
+**cf-tunnel** provides significant advantages over alternatives like `cloudflared-tunnel` or `untun`:
+
+- **Consistent URLs**: Unlike Quick Tunnels that use random URLs, cf-tunnel uses [Locally-managed tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/local-management/) with user-defined hostnames – critical for OAuth/SSO authentication flows.
+- **Config-Driven Approach**: Manage tunnels entirely from your configuration file – no manual CLI commands needed.
+- **Automatic Lifecycle Management**: Creates, configures, and cleans up tunnels and DNS records automatically.
+- **Clean Exit Handling**: Automatically removes tunnels and DNS records when your application exits.
+
+### When to Choose cf-tunnel
+
+Choose **cf-tunnel** when you need:
+
+- A persistent, custom hostname for your local development environment
+- Authentication flows that require stable callback URLs
+- Automated tunnel management within your application lifecycle
+- Complete cleanup of resources when your application exits
+
 ## Features
 
 - 🚀 Simple CLI interface
@@ -97,7 +115,6 @@ Example configuration file:
 export default {
   cfToken: process.env.CF_TOKEN, // Cloudflare API token
   tunnelName: "my-tunnel",
-  domain: "example.com",
   ingress: [
     {
       hostname: "app.example.com",
@@ -105,6 +122,9 @@ export default {
     },
     // Add more services as needed
   ],
+  // Optional: Control how existing resources are handled
+  removeExistingDns: false, // Set to true to automatically remove existing DNS records
+  removeExistingTunnel: false, // Set to true to automatically remove existing tunnel
 };
 ```
 
@@ -146,30 +166,55 @@ import { cfTunnel, defineTunnelConfig } from "cf-tunnel";
 const config = defineTunnelConfig({
   cfToken: process.env.CF_TOKEN,
   tunnelName: "my-tunnel",
-  domain: "example.com",
   ingress: [
     {
       hostname: "app.example.com",
       service: "http://localhost:3000",
     },
   ],
+  removeExistingDns: true,
+  removeExistingTunnel: true,
 });
 
 // Start the tunnel
 await cfTunnel(config);
 ```
 
+## Lifecycle Management
+
+**cf-tunnel** manages the entire lifecycle of your Cloudflare Tunnel:
+
+1. **Setup Phase**:
+
+   - If `removeExistingTunnel: true`, removes any existing tunnel with the same name
+   - If `removeExistingDns: true`, removes DNS records for hostnames in your config
+   - Creates a new tunnel with the specified name
+   - Configures DNS records for all ingress services
+
+2. **Running Phase**:
+
+   - Runs the tunnel in the foreground
+   - Keeps the process alive until interrupted
+
+3. **Cleanup Phase** (triggered on process exit):
+   - Automatically removes all DNS records created for the tunnel
+   - Deletes the tunnel from Cloudflare
+   - Removes local credential files
+
+This automatic lifecycle management ensures no orphaned resources are left in your Cloudflare account.
+
 ---
 
 ## Configuration Options
 
-| Option               | Type      | Required | Default               | Description                          |
-| -------------------- | --------- | -------- | --------------------- | ------------------------------------ |
-| cfToken              | string    | Yes      | process.env.CF_TOKEN  | Cloudflare API token                 |
-| tunnelName           | string    | Yes      | -                     | Name for the tunnel                  |
-| domain               | string    | Yes      | -                     | Your Cloudflare domain               |
-| ingress              | Ingress[] | Yes      | -                     | Array of services to expose          |
-| cloudflaredConfigDir | string    | No       | OS-specific default\* | Path to cloudflared config directory |
+| Option               | Type      | Required | Default               | Description                                             |
+| -------------------- | --------- | -------- | --------------------- | ------------------------------------------------------- |
+| cfToken              | string    | Yes      | process.env.CF_TOKEN  | Cloudflare API token                                    |
+| tunnelName           | string    | Yes      | -                     | Name for the tunnel                                     |
+| ingress              | Ingress[] | Yes      | -                     | Array of services to expose                             |
+| cloudflaredConfigDir | string    | No       | OS-specific default\* | Path to cloudflared config directory                    |
+| removeExistingDns    | boolean   | No       | false                 | If true, removes existing DNS records                   |
+| removeExistingTunnel | boolean   | No       | false                 | If true, removes any existing tunnel with the same name |
 
 \* Default config directory:
 
@@ -198,7 +243,6 @@ import { cfTunnel, defineTunnelConfig } from "cf-tunnel";
 const tunnelConfig = defineTunnelConfig({
   cfToken: process.env.CF_TOKEN,
   tunnelName: "test-tunnel",
-  domain: "test.com",
   ingress: [{ hostname: "test.com", service: "localhost:3000" }],
 });
 

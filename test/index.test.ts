@@ -33,6 +33,8 @@ const TEST_CONFIG = {
       service: "http://localhost:3000",
     },
   ],
+  removeExistingDns: true,
+  removeExistingTunnel: true,
 };
 
 describe("cf-tunnel", () => {
@@ -67,6 +69,8 @@ describe("cf-tunnel", () => {
           service: "http://localhost:3000",
         },
       ],
+      removeExistingDns: true,
+      removeExistingTunnel: true,
     });
 
     await cfTunnel(config);
@@ -119,6 +123,102 @@ describe("cf-tunnel", () => {
 
     expect(execSync).toHaveBeenCalledWith(
       `rm ${join(homedir(), ".cloudflared", "existing-id.json")}`,
+    );
+  });
+
+  it("respects removeExistingTunnel option", async () => {
+    // Mock an existing tunnel
+    vi.mocked(execSync).mockReturnValueOnce(
+      Buffer.from("existing-id test-tunnel"),
+    );
+
+    // Test with removeExistingTunnel: false (default)
+    const config = defineTunnelConfig({
+      ...TEST_CONFIG,
+      removeExistingTunnel: false,
+    });
+
+    await expect(cfTunnel(config)).rejects.toThrow(
+      /Tunnel "test-tunnel" already exists/,
+    );
+
+    // Test with removeExistingTunnel: true
+    const configWithRemove = defineTunnelConfig({
+      ...TEST_CONFIG,
+      removeExistingTunnel: true,
+    });
+
+    await expect(cfTunnel(configWithRemove)).resolves.not.toThrow();
+  });
+
+  it("respects removeExistingDns option", async () => {
+    // Mock an existing DNS record
+    globalThis.fetch = vi.fn().mockImplementation((url) => {
+      if (url.includes("/dns_records?name=")) {
+        return Promise.resolve({
+          json: () => Promise.resolve({ result: [{ id: "fake-dns-id" }] }),
+        });
+      }
+      return Promise.resolve({
+        json: () => Promise.resolve({ result: [{ id: "fake-zone-id" }] }),
+      });
+    }) as any;
+
+    // Test with removeExistingDns: false (default)
+    const config = defineTunnelConfig({
+      ...TEST_CONFIG,
+      removeExistingDns: false,
+      removeExistingTunnel: true, // To avoid the tunnel error
+    });
+
+    await expect(cfTunnel(config)).rejects.toThrow(
+      /DNS record for "test.test-domain.test" already exists/,
+    );
+
+    // Test with removeExistingDns: true
+    const configWithRemove = defineTunnelConfig({
+      ...TEST_CONFIG,
+      removeExistingDns: true,
+      removeExistingTunnel: true, // To avoid the tunnel error
+    });
+
+    await expect(cfTunnel(configWithRemove)).resolves.not.toThrow();
+  });
+
+  it("uses default values (false) for removeExisting options", async () => {
+    // Mock an existing tunnel
+    vi.mocked(execSync).mockReturnValueOnce(
+      Buffer.from("existing-id test-tunnel"),
+    );
+
+    // Mock an existing DNS record
+    globalThis.fetch = vi.fn().mockImplementation((url) => {
+      if (url.includes("/dns_records?name=")) {
+        return Promise.resolve({
+          json: () => Promise.resolve({ result: [{ id: "fake-dns-id" }] }),
+        });
+      }
+      return Promise.resolve({
+        json: () => Promise.resolve({ result: [{ id: "fake-zone-id" }] }),
+      });
+    }) as any;
+
+    // Test with defaults (should be false for both)
+    const config = defineTunnelConfig({
+      cfToken: "fake-token",
+      tunnelName: "test-tunnel",
+      ingress: [
+        {
+          hostname: "test.test-domain.test",
+          service: "http://localhost:3000",
+        },
+      ],
+      // Not setting removeExistingDns or removeExistingTunnel options
+    });
+
+    // Should throw error about existing tunnel first (since that's checked before DNS)
+    await expect(cfTunnel(config)).rejects.toThrow(
+      /Tunnel "test-tunnel" already exists/,
     );
   });
 });

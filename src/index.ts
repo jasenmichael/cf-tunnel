@@ -16,9 +16,9 @@ export interface TunnelConfig {
   tunnelName: string;
   cloudflaredConfigDir?: string;
   ingress: TunnelIngress[];
-  // TODO: add optional removeDnsRecords and removeTunnel
-  // removeDnsRecords?: { before: boolean, after: boolean }
-  // removeTunnel?: { before: boolean, after: boolean }
+  // New configuration options
+  removeExistingDns?: boolean;
+  removeExistingTunnel?: boolean;
 }
 
 /**
@@ -32,7 +32,9 @@ export interface TunnelConfig {
  *   ingress: [{
  *     hostname: 'app.example.com',
  *     service: 'http://localhost:3000'
- *   }]
+ *   }],
+ *   removeExistingDns: true,
+ *   removeExistingTunnel: true
  * })
  * ```
  *
@@ -41,6 +43,8 @@ export interface TunnelConfig {
  * @param config.tunnelName - Name for the tunnel
  * @param config.cloudflaredConfigDir - Path to cloudflared config directory (defaults to ~/.cloudflared)
  * @param config.ingress - Array of services to expose
+ * @param config.removeExistingDns - If true, removes existing DNS records (default: false)
+ * @param config.removeExistingTunnel - If true, removes existing tunnel with same name (default: false)
  * @returns Validated tunnel configuration
  */
 export function defineTunnelConfig(config: TunnelConfig): TunnelConfig {
@@ -66,6 +70,7 @@ function getCloudflaredConfigDir(): string {
 async function deleteTunnel({
   tunnelName,
   cloudflaredConfigDir = getCloudflaredConfigDir(),
+  removeExistingTunnel = false,
 }: TunnelConfig) {
   // Get and delete existing tunnel if exists
   const tunnelList = execSync("cloudflared tunnel list").toString();
@@ -75,6 +80,13 @@ async function deleteTunnel({
     ?.split(" ")[0];
 
   if (existingTunnelId) {
+    if (!removeExistingTunnel) {
+      throw new Error(
+        `Tunnel "${tunnelName}" already exists. Set removeExistingTunnel: true to remove it automatically.`,
+      );
+    }
+
+    console.log(`Removing existing tunnel: ${tunnelName}`);
     execSync(`cloudflared tunnel delete ${existingTunnelId}`);
     const credFile = join(cloudflaredConfigDir, `${existingTunnelId}.json`);
     if (existsSync(credFile)) {
@@ -110,8 +122,11 @@ async function getZoneId(domain: string, cfToken: string) {
 }
 
 async function deleteDnsRecords(
-  config: Required<Pick<TunnelConfig, "cfToken" | "ingress">>,
+  config: Required<Pick<TunnelConfig, "cfToken" | "ingress">> &
+    Pick<TunnelConfig, "removeExistingDns">,
 ) {
+  const { removeExistingDns = false } = config;
+
   // Remove existing DNS records
   for (const service of config.ingress) {
     // Extract domain from hostname
@@ -138,6 +153,13 @@ async function deleteDnsRecords(
     const recordId = recordData.result[0]?.id;
 
     if (recordId) {
+      if (!removeExistingDns) {
+        throw new Error(
+          `DNS record for "${service.hostname}" already exists. Set removeExistingDns: true to remove it automatically.`,
+        );
+      }
+
+      console.log(`Removing existing DNS record: ${service.hostname}`);
       await fetch(
         `https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records/${recordId}`,
         {
@@ -166,7 +188,9 @@ async function deleteDnsRecords(
  *   ingress: [{
  *     hostname: 'app.example.com',
  *     service: 'http://localhost:3000'
- *   }]
+ *   }],
+ *   removeExistingDns: true,
+ *   removeExistingTunnel: true
  * })
  * ```
  *
@@ -175,12 +199,16 @@ async function deleteDnsRecords(
  * @param userConfig.tunnelName - Name for the tunnel
  * @param userConfig.cloudflaredConfigDir - Path to cloudflared config directory (defaults to ~/.cloudflared)
  * @param userConfig.ingress - Array of services to expose
+ * @param userConfig.removeExistingDns - If true, removes existing DNS records (default: false)
+ * @param userConfig.removeExistingTunnel - If true, removes existing tunnel with same name (default: false)
  * @throws Will throw an error if cfToken is missing
  */
 export async function cfTunnel(userConfig: TunnelConfig) {
   const config = defu(userConfig, {
     cloudflaredConfigDir: getCloudflaredConfigDir(),
     cfToken: userConfig.cfToken || process.env.CF_TOKEN,
+    removeExistingDns: false,
+    removeExistingTunnel: false,
   });
 
   // Validate cfToken early
@@ -197,8 +225,8 @@ export async function cfTunnel(userConfig: TunnelConfig) {
     execSync("cloudflared tunnel login");
   }
 
-  await deleteDnsRecords(validatedConfig);
   await deleteTunnel(validatedConfig);
+  await deleteDnsRecords(validatedConfig);
 
   // Create new tunnel
   execSync(`cloudflared tunnel create ${validatedConfig.tunnelName}`);
@@ -242,10 +270,10 @@ export async function cfTunnel(userConfig: TunnelConfig) {
   process.on("SIGINT", async () => {
     console.log("SIGINT exiting");
     tunnel.kill("SIGINT");
-    // remove dns records
-    await deleteDnsRecords(validatedConfig);
     // delete cloudflared tunnel, and local tunnel credentials .json file
     await deleteTunnel(validatedConfig);
+    // remove dns records
+    await deleteDnsRecords(validatedConfig);
     // remove config.yml
     execSync(`rm ${join(validatedConfig.cloudflaredConfigDir, "config.yml")}`);
   });
