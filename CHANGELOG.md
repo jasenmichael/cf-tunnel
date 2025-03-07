@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.4
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.3...v0.1.4)
+
+### 🩹 Fixes
+
+- Always run removeExistingDns and removeExistingTunnel on exit/cleanup ([5b3f7cb](https://github.com/jasenmichael/cf-tunnel/commit/5b3f7cb))
+
+### 🏡 Chore
+
+- **release:** V0.1.3 ([f79d1bf](https://github.com/jasenmichael/cf-tunnel/commit/f79d1bf))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.1.3
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.2...v0.1.3)
