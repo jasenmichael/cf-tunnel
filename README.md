@@ -1,4 +1,4 @@
-# 모-cf-tunnel-던
+# cf-tunnel 모
 
 Easily manage Cloudflare Tunnels in your Node.js applications.
 
@@ -79,6 +79,12 @@ cf-tunnel -c custom-tunnel.config.js
 cf-tunnel -c path/to/my-config.js
 cf-tunnel -c /absolute/path/config.yml
 cf-tunnel -c ./relative/config.json
+```
+
+#### Or directly with JSON configuration string
+
+```sh
+cf-tunnel --json '{"cfToken":"your-token","tunnelName":"my-tunnel","ingress":[{"hostname":"app.example.com","service":"http://localhost:3000"}]}'
 ```
 
 <!-- automd:pm-x name="cf-tunnel" -->
