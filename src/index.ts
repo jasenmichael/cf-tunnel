@@ -123,17 +123,28 @@ function extractDomain(hostname: string): string {
 }
 
 async function getZoneId(domain: string, cfToken: string) {
-  const response = await fetch(
-    `https://api.cloudflare.com/client/v4/zones?name=${domain}`,
-    {
-      headers: {
-        Authorization: `Bearer ${cfToken}`,
-        "Content-Type": "application/json",
+  try {
+    const response = await fetch(
+      `https://api.cloudflare.com/client/v4/zones?name=${domain}`,
+      {
+        headers: {
+          Authorization: `Bearer ${cfToken}`,
+          "Content-Type": "application/json",
+        },
       },
-    },
-  );
-  const data = await response.json();
-  return data.result[0]?.id;
+    );
+
+    // Check if response exists and has json method
+    if (!response || typeof response.json !== "function") {
+      return undefined; // Return undefined instead of throwing during cleanup
+    }
+
+    const data = await response.json();
+    return data?.result?.[0]?.id;
+  } catch (error) {
+    console.warn(`Warning: Error getting zone ID for ${domain}: ${error}`);
+    return undefined; // Don't throw during cleanup
+  }
 }
 
 async function deleteDnsRecords(
@@ -280,13 +291,19 @@ export async function cfTunnel(userConfig: TunnelConfig) {
   console.log("Running tunnel:", tunnelCommand);
 
   const tunnel = spawn(tunnelCommand, { shell: true, stdio: "inherit" });
+  let cleanupDone = false;
 
   // Handle cleanup on exit
-  process.on("SIGINT", async () => {
-    console.log("SIGINT exiting");
-    tunnel.kill("SIGINT");
+  const cleanup = async () => {
+    if (cleanupDone) return;
+    cleanupDone = true;
 
-    // delete cloudflared tunnel, and local tunnel credentials .json file
+    console.log("Cleaning up tunnel resources...");
+
+    // Just terminate the process, don't send SIGINT which could trigger another cleanup
+    tunnel.kill();
+
+    // Remove tunnel and DNS records
     await deleteTunnel({ ...validatedConfig, removeExistingTunnel: true });
     // remove dns records
     await deleteDnsRecords({ ...validatedConfig, removeExistingDns: true });
@@ -296,5 +313,11 @@ export async function cfTunnel(userConfig: TunnelConfig) {
         `rm ${join(validatedConfig.cloudflaredConfigDir, "config.yml")}`,
       );
     }
-  });
+  };
+
+  process.on("SIGINT", cleanup);
+  process.on("SIGTERM", cleanup);
+
+  // Also cleanup if the tunnel process exits
+  tunnel.on("exit", cleanup);
 }

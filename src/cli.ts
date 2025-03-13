@@ -87,15 +87,24 @@ program
   .description("Cloudflare tunnel manager")
   .version(version)
   .option("-c, --config <path>", "Config file path")
+  .option("--json <string>", "Config as json string")
   .action(async (options) => {
     try {
-      const configPath = getConfigPath(options.config);
-      consola.info(`Loading config: ${configPath}`);
-      const config = await loadConfig(configPath);
+      let config: TunnelConfig;
+      if (options.json) {
+        config = JSON.parse(options.json);
+      } else {
+        const configPath = getConfigPath(options.config);
+        consola.info(`Loading config: ${configPath}`);
+        config = await loadConfig(configPath);
+      }
+
+      config.cfToken =
+        config.cfToken ||
+        process.env?.CF_TOKEN ||
+        process.env?.CLOUDFLARE_TOKEN;
+
       consola.info("Config loaded");
-
-      config.cfToken = config.cfToken || process.env?.CF_TOKEN;
-
       await cfTunnel(config);
     } catch (error) {
       consola.error(error);
