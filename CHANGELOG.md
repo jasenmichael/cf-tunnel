@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.6
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.5...v0.1.6)
+
+### 🏡 Chore
+
+- Update README.md ([dfea23d](https://github.com/jasenmichael/cf-tunnel/commit/dfea23d))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.1.5
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.4...v0.1.5)
