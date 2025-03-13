@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.1.5
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.4...v0.1.5)
+
+### 🚀 Enhancements
+
+- Add --json config option ([e533d3c](https://github.com/jasenmichael/cf-tunnel/commit/e533d3c))
+
+### 🏡 Chore
+
+- Update .gitignore ([2c12ba5](https://github.com/jasenmichael/cf-tunnel/commit/2c12ba5))
+- Remove dev script ([9b5afc6](https://github.com/jasenmichael/cf-tunnel/commit/9b5afc6))
+
+### ✅ Tests
+
+- Add json config test ([68d0bb6](https://github.com/jasenmichael/cf-tunnel/commit/68d0bb6))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.1.4
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.3...v0.1.4)
