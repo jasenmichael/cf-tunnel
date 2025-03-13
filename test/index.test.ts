@@ -16,6 +16,7 @@ vi.mock("node:child_process", () => ({
   execSync: vi.fn(() => "fake-tunnel-id"),
   spawn: vi.fn(() => ({
     kill: vi.fn(),
+    on: vi.fn(),
   })),
 }));
 
