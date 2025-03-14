@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.1.8
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.7...v0.1.8)
+
+### 🏡 Chore
+
+- Update keywords ([2132e8f](https://github.com/jasenmichael/cf-tunnel/commit/2132e8f))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.1.7
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.6...v0.1.7)
