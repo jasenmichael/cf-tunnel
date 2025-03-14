@@ -26,6 +26,10 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "cloudflare-tunnel",
+    "cf-tunnel"
+  ],
   "scripts": {
     "build": "unbuild",
     "dev": "vitest dev",
