@@ -28,7 +28,9 @@
   ],
   "keywords": [
     "cloudflare-tunnel",
-    "cf-tunnel"
+    "cf-tunnel",
+    "cloudflare",
+    "cloudflared"
   ],
   "scripts": {
     "build": "unbuild",
