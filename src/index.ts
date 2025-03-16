@@ -301,10 +301,10 @@ export async function cfTunnel(userConfig: TunnelConfig) {
     console.log("Cleaning up tunnel resources...");
 
     // Gracefully terminate the tunnel process
-    tunnel.kill('SIGTERM');
+    tunnel.kill("SIGTERM");
 
     // Wait a short time for cloudflared to clean up
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Remove tunnel and DNS records
     await deleteTunnel({ ...validatedConfig, removeExistingTunnel: true });
