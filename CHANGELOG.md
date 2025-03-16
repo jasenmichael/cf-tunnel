@@ -1,5 +1,26 @@
 # Changelog
 
+## v0.1.9
+
+[compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.8...v0.1.9)
+
+### 🩹 Fixes
+
+- DeleteTunnel on cleanup ([d23d968](https://github.com/jasenmichael/cf-tunnel/commit/d23d968))
+- DeleteTunnel on cleanup ([a863686](https://github.com/jasenmichael/cf-tunnel/commit/a863686))
+
+### 🏡 Chore
+
+- Update README.md ([f2c6cf9](https://github.com/jasenmichael/cf-tunnel/commit/f2c6cf9))
+
+### ✅ Tests
+
+- DeleteTunnel on cleanup ([d75dfe0](https://github.com/jasenmichael/cf-tunnel/commit/d75dfe0))
+
+### ❤️ Contributors
+
+- Jasenmichael <jasen@jasenmichael.com>
+
 ## v0.1.8
 
 [compare changes](https://github.com/jasenmichael/cf-tunnel/compare/v0.1.7...v0.1.8)
