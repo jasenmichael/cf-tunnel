@@ -253,7 +253,6 @@ const tunnelConfig = defineTunnelConfig({
 });
 
 await cfTunnel(tunnelConfig);
-
 ```
 
 <!-- /automd -->
