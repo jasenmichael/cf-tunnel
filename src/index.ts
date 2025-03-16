@@ -300,8 +300,11 @@ export async function cfTunnel(userConfig: TunnelConfig) {
 
     console.log("Cleaning up tunnel resources...");
 
-    // Just terminate the process, don't send SIGINT which could trigger another cleanup
-    tunnel.kill();
+    // Gracefully terminate the tunnel process
+    tunnel.kill('SIGTERM');
+
+    // Wait a short time for cloudflared to clean up
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Remove tunnel and DNS records
     await deleteTunnel({ ...validatedConfig, removeExistingTunnel: true });
@@ -313,6 +316,9 @@ export async function cfTunnel(userConfig: TunnelConfig) {
         `rm ${join(validatedConfig.cloudflaredConfigDir, "config.yml")}`,
       );
     }
+
+    // eslint-disable-next-line unicorn/no-process-exit
+    process.exit(0);
   };
 
   process.on("SIGINT", cleanup);
